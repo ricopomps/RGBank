@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-import User, { IUser } from '../models/UserModel';
+import { IUser } from '../models/UserModel';
 import UserRepository from '../repositories/UserRepository';
 
 class UserService {
