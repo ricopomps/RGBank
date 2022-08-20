@@ -1,9 +1,10 @@
 import express from 'express';
-import http from 'http';
 import mongoose from 'mongoose';
+import crypto from 'crypto';
+
 import { config } from './config/config';
 import Logging from './library/Logging';
-import userRoutes from './routes/User';
+import userRoutes from './routes/UserRoutes';
 
 const router = express();
 
@@ -40,16 +41,29 @@ const StartServer = () => {
         next();
     });
 
+    router.use((req, res, next) => {
+        Logging.info('middleware of validation' + res.statusCode);
+        res.on('finish', () => {
+            if (res.statusCode >= 500) {
+                const uuid = crypto.randomUUID();
+                const error = new Error(`Unexpected error, please contact support with the code: ${uuid}`);
+                Logging.error(error);
+            }
+        });
+        next();
+    });
+
     router.use('/users', userRoutes);
 
     router.get('/ping', (req, res, next) => res.status(200).json({ message: 'pong' }));
 
     router.use((req, res, next) => {
-        const error = new Error('not found');
+        const uuid = crypto.randomUUID();
+        const error = new Error('route not found');
         Logging.error(error);
 
         return res.status(404).json({ message: error.message });
     });
 
-    http.createServer(router).listen(config.server.port, () => Logging.info(`Server running in port ${config.server.port}`));
+    router.listen(config.server.port, () => Logging.info(`Server running in port ${config.server.port}`));
 };
