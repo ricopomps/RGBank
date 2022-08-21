@@ -43,6 +43,7 @@ class TransactionService {
             return { statusCode: 500, data: { message: error?.message } };
         }
     }
+
     public async deposit(account: IAccount, amount: number) {
         try {
             if (amount <= 0) throw new Error('Invalid amount');
