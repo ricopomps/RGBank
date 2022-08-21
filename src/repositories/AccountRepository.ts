@@ -69,6 +69,14 @@ class AccountRepository {
                 return { statusCode: 500, data: error };
             });
     }
+
+    public async findById(accountId: string) {
+        return await Account.findById(accountId);
+    }
+
+    public async findAccount(account: IAccount) {
+        return await Account.findOne({ code: account.code });
+    }
 }
 
 export default new AccountRepository();
