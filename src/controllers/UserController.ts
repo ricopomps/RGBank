@@ -4,39 +4,45 @@ import UserService from '../services/UserService';
 class UserController {
     public async createUser(req: Request, res: Response) {
         const response = await UserService.createUser(req.body);
-        return res.status(response.statusCode).json(response.data);
+        if (response) return res.status(201).json(response);
+        return res.status(500).json({ message: 'Unable to create user' });
     }
 
     public async readUser(req: Request, res: Response) {
         const { userId } = req.params;
 
         const response = await UserService.readUser(userId);
-        return res.status(response.statusCode).json(response.data);
+        if (response) return res.status(200).json(response);
+        return res.status(404).json({ message: 'User not found' });
     }
 
     public async readAll(req: Request, res: Response) {
         const response = await UserService.readAll();
-        return res.status(response.statusCode).json(response.data);
+        if (response) return res.status(200).json(response);
+        return res.status(404).json({ message: 'No users found' });
     }
 
     public async updateUser(req: Request, res: Response) {
         const { userId } = req.params;
 
         const response = await UserService.updateUser(userId, req.body);
-        return res.status(response.statusCode).json(response.data);
+        if (response) return res.status(200).json(response);
+        return res.status(404).json({ message: 'User not found' });
     }
 
     public async deleteUser(req: Request, res: Response) {
         const { userId } = req.params;
 
         const response = await UserService.deleteUser(userId);
-        return res.status(response.statusCode).json(response.data);
+        if (response) return res.status(200).json(response);
+        return res.status(404).json({ message: 'User not found' });
     }
 
     public async login(req: Request, res: Response) {
         const user = req.body;
         const response = await UserService.login(user);
-        return res.status(response.statusCode).json(response.data);
+        if (response) return res.status(200).json(response);
+        return res.status(404).json({ message: 'User not found' });
     }
 }
 

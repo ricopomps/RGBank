@@ -9,24 +9,24 @@ class PaymentService {
             this.validatePayment(inputPayment);
 
             return await PaymentRepository.createPayment(inputPayment);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
     public async readPayment(paymentId: string) {
         try {
             return await PaymentRepository.readPayment(paymentId);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
     public async readAll() {
         try {
             return await PaymentRepository.readAll();
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -34,16 +34,16 @@ class PaymentService {
         try {
             this.validatePayment(payment);
             return await PaymentRepository.updatePayment(paymentId, payment);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
     public async deletePayment(paymentId: string) {
         try {
             return await PaymentRepository.deletePayment(paymentId);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -62,8 +62,8 @@ class PaymentService {
             this.validatePayment(pix);
 
             return await PaymentRepository.createPayment(pix);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -78,8 +78,8 @@ class PaymentService {
             this.validatePayment(slip);
 
             return await PaymentRepository.createPayment(slip);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -92,7 +92,7 @@ class PaymentService {
         });
 
         if (errors.length > 0) {
-            const message = errors.length === 1 ? `A propriedade '${errors[0]}' é obrigatória` : `As propriedades '${errors.join(', ')}' são obrigatórias`;
+            const message = errors.length === 1 ? `The property '${errors[0]}' is required` : `The properties '${errors.join(', ')}' are required`;
 
             throw new Error(message);
         }

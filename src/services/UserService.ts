@@ -21,26 +21,26 @@ class UserService {
             const hashedUser = { ...user, password: hashedPassword };
 
             const createdUser = await UserRepository.createUser(hashedUser);
-            this.validateUser(createdUser.data);
-            return { statusCode: createdUser.statusCode, data: { message: 'User created' } };
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+            this.validateUser(createdUser);
+            return createdUser;
+        } catch (error) {
+            return null;
         }
     }
 
     public async readUser(userId: string) {
         try {
             return await UserRepository.readUser(userId);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
     public async readAll() {
         try {
             return await UserRepository.readAll();
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -48,16 +48,16 @@ class UserService {
         try {
             this.validateUser(user);
             return await UserRepository.updateUser(userId, user);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
     public async deleteUser(userId: string) {
         try {
             return await UserRepository.deleteUser(userId);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -85,8 +85,8 @@ class UserService {
             const accessToken = jwt.sign({ secureUser }, config.auth.secret);
 
             return { statusCode: 200, data: { accessToken, secureUser } };
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 }

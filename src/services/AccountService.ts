@@ -9,41 +9,51 @@ class AccountService {
             const account = { code, type, user, balance: 0, bank: 'RGBank' };
             this.validateAccount(account);
 
-            return await AccountRepository.createAccount(account);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+            const createdAccount = AccountRepository.createAccount(account);
+            if (!createdAccount) throw new Error('Account not created');
+            return createdAccount;
+        } catch (error) {
+            return null;
         }
     }
 
     public async readAccount(accountId: string) {
         try {
-            return await AccountRepository.readAccount(accountId);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+            const account = await AccountRepository.readAccount(accountId);
+            if (!account) throw new Error('Account not found');
+            return account;
+        } catch (error) {
+            return null;
         }
     }
 
     public async readAll() {
         try {
-            return await AccountRepository.readAll();
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+            const accounts = await AccountRepository.readAll();
+            if (!accounts) throw new Error('No accounts found');
+            return accounts;
+        } catch (error) {
+            return null;
         }
     }
 
     public async updateAccount(accountId: string, account: IAccount) {
         try {
-            return await AccountRepository.updateAccount(accountId, account);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+            const updatedAccount = await AccountRepository.updateAccount(accountId, account);
+            if (!updatedAccount) throw new Error('Account not found');
+            return updatedAccount;
+        } catch (error) {
+            return null;
         }
     }
 
     public async deleteAccount(accountId: string) {
         try {
-            return await AccountRepository.deleteAccount(accountId);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+            const deleteAccount = await AccountRepository.deleteAccount(accountId);
+            if (!deleteAccount) throw new Error('Account not found');
+            return deleteAccount;
+        } catch (error) {
+            return null;
         }
     }
 
@@ -90,7 +100,7 @@ class AccountService {
             this.removeFunds(originAccountModel._id, amount);
 
             return { originAccountId: originAccountModel._id, targetAccountId: targetAccountModel._id };
-        } catch (error: any) {
+        } catch (error) {
             return null;
         }
     }
@@ -117,7 +127,7 @@ class AccountService {
 
             switch (payment.type) {
                 case 'pix':
-                    this.addFunds(targetAccount.data._id, payment.amount);
+                    this.addFunds(targetAccount._id, payment.amount);
                     this.removeFunds(originAccount._id, payment.amount);
                     break;
                 case 'slip':

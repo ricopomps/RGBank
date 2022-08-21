@@ -8,26 +8,26 @@ class TransactionService {
     public async readTransaction(transactionId: string) {
         try {
             return await TransactionRepository.readTransaction(transactionId);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
     public async readAll() {
         try {
             return await TransactionRepository.readAll();
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
     public async readTransactionByAccount(accountId: string) {
         try {
             const response = await TransactionRepository.readTransactionByAccount(accountId);
-            if (response && response.length > 0) return { statusCode: 200, data: response };
-            else return { statusCode: 404, data: { message: 'No transactions' } };
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+            if (response && response.length > 0) return response;
+            else throw new Error('No transactions');
+        } catch (error) {
+            return null;
         }
     }
 
@@ -40,8 +40,8 @@ class TransactionService {
                 const transaction: ITransaction = { originAccount: transfer.originAccountId, targetAccount: transfer.targetAccountId, amount, type: 'transfer' };
                 return await TransactionRepository.createTransaction(transaction);
             } else throw new Error('Error during transaction');
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -57,8 +57,8 @@ class TransactionService {
             } else {
                 throw new Error('Error during transaction');
             }
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -74,8 +74,8 @@ class TransactionService {
 
             await PaymentService.deletePayment(payment._id);
             return await TransactionRepository.createTransaction(transaction);
-        } catch (error: any) {
-            return { statusCode: 500, data: { message: error?.message } };
+        } catch (error) {
+            return null;
         }
     }
 }
