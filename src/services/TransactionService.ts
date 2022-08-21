@@ -24,15 +24,23 @@ class TransactionService {
         try {
             if (amount <= 0) throw new Error('Invalid amount');
 
-            const originAccountModel = await AccountService.findAccount(originAccount);
-            if (!originAccountModel) return;
-            if (originAccountModel.balance < amount) throw new Error('Insuficient funds');
+            const transfer = await AccountService.transfer(originAccount, targetAccount, amount);
+            if (transfer) {
+                const transaction: ITransaction = { originAccount: transfer.originAccountId, targetAccount: transfer.targetAccountId, amount, type: 'transfer' };
+                return await TransactionRepository.createTransaction(transaction);
+            } else throw new Error('Error during transaction');
+        } catch (error: any) {
+            return { statusCode: 500, data: { message: error?.message } };
+        }
+    }
+    public async deposit(account: IAccount, amount: number) {
+        try {
+            if (amount <= 0) throw new Error('Invalid amount');
 
-            const targetAccountModel = await AccountService.findAccount(targetAccount);
-            if (!targetAccountModel) return;
+            const deposit = await AccountService.deposit(account, amount);
 
-            if (await AccountService.transfer(originAccountModel._id, targetAccountModel._id, amount)) {
-                const transaction: ITransaction = { originAccount: originAccountModel._id, targetAccount: targetAccountModel._id, amount, type: 'transfer' };
+            if (deposit) {
+                const transaction: ITransaction = { originAccount: deposit.accountId, targetAccount: deposit.accountId, amount, type: 'deposit' };
                 return await TransactionRepository.createTransaction(transaction);
             } else {
                 throw new Error('Error during transaction');

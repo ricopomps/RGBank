@@ -47,11 +47,6 @@ class AccountService {
         }
     }
 
-    public async findAccount(account: IAccount) {
-        this.validateAccount(account);
-        return await AccountRepository.findAccount(account);
-    }
-
     private async addFunds(accountId: string, amount: number) {
         if (amount <= 0) throw new Error('Invalid amount');
 
@@ -76,21 +71,42 @@ class AccountService {
         return await account.save();
     }
 
-    public async transfer(originAccountId: string, targetAccountId: string, amount: number) {
+    private async findAccount(account: IAccount) {
+        this.validateAccount(account);
+        return await AccountRepository.findAccount(account);
+    }
+
+    public async transfer(originAccount: IAccount, targetAccount: IAccount, amount: number) {
         try {
             if (amount <= 0) throw new Error('Invalid amount');
 
-            const originAccount = await AccountRepository.findById(originAccountId);
-            const targetAccount = await AccountRepository.findById(targetAccountId);
+            const originAccountModel = await this.findAccount(originAccount);
+            const targetAccountModel = await this.findAccount(targetAccount);
 
-            if (!originAccount || !targetAccount) throw new Error('Account not found');
+            if (!originAccountModel || !targetAccountModel) throw new Error('Account not found');
 
-            this.addFunds(targetAccount._id, amount);
-            this.removeFunds(originAccount._id, amount);
+            if (originAccountModel.balance < amount) throw new Error('Insuficient balance');
 
-            return true;
+            this.addFunds(targetAccountModel._id, amount);
+            this.removeFunds(originAccountModel._id, amount);
+
+            return { originAccountId: originAccountModel._id, targetAccountId: targetAccountModel._id };
         } catch (error: any) {
-            return false;
+            return null;
+        }
+    }
+
+    public async deposit(account: IAccount, amount: number) {
+        try {
+            if (amount <= 0) throw new Error('Invalid amount');
+            const accountModel = await this.findAccount(account);
+
+            if (!accountModel) throw new Error('Account not found');
+
+            this.addFunds(accountModel._id, amount);
+            return { accountId: accountModel._id };
+        } catch (error) {
+            return null;
         }
     }
 
@@ -103,7 +119,7 @@ class AccountService {
         });
 
         if (errors.length > 0) {
-            const message = errors.length === 1 ? `A propriedade '${errors[0]}' é obrigatória` : `As propriedades '${errors.join(', ')}' são obrigatórias`;
+            const message = errors.length === 1 ? `The property '${errors[0]}' is required` : `The properties '${errors.join(', ')}' are required`;
 
             throw new Error(message);
         }

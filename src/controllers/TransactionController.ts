@@ -17,7 +17,13 @@ class TransactionController {
     public async transfer(req: Request, res: Response, next: NextFunction) {
         const { originAccount, targetAccount, amount } = req.body;
         const response = await transactionService.transfer(originAccount, targetAccount, amount);
-        return res.status(response?.statusCode || 500).json(response?.data);
+        return res.status(response.statusCode).json(response.data);
+    }
+
+    public async deposit(req: Request, res: Response, next: NextFunction) {
+        const { account, amount } = req.body;
+        const response = await transactionService.deposit(account, amount);
+        return res.status(response.statusCode).json(response.data);
     }
 }
 
