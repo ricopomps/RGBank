@@ -30,6 +30,12 @@ class TransactionController {
         const response = await TransactionService.deposit(account, amount);
         return res.status(response.statusCode).json(response.data);
     }
+
+    public async payment(req: Request, res: Response, next: NextFunction) {
+        const { paymentCode, originAccountCode } = req.body;
+        const response = await TransactionService.payment(paymentCode, originAccountCode);
+        return res.status(response.statusCode).json(response.data);
+    }
 }
 
 export default new TransactionController();

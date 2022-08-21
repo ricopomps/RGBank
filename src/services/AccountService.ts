@@ -1,6 +1,6 @@
 import { IAccount } from '../models/AccountModel';
+import { IPayment } from '../models/PaymentModel';
 import AccountRepository from '../repositories/AccountRepository';
-import { options } from '../routes/UserRoutes';
 
 class AccountService {
     public async createAccount(inputAccount: IAccount) {
@@ -71,17 +71,16 @@ class AccountService {
         return await account.save();
     }
 
-    private async findAccount(account: IAccount) {
-        this.validateAccount(account);
-        return await AccountRepository.findAccount(account);
+    private async findAccount(code: number) {
+        return await AccountRepository.findAccount(code);
     }
 
     public async transfer(originAccount: IAccount, targetAccount: IAccount, amount: number) {
         try {
             if (amount <= 0) throw new Error('Invalid amount');
 
-            const originAccountModel = await this.findAccount(originAccount);
-            const targetAccountModel = await this.findAccount(targetAccount);
+            const originAccountModel = await this.findAccount(originAccount.code);
+            const targetAccountModel = await this.findAccount(targetAccount.code);
 
             if (!originAccountModel || !targetAccountModel) throw new Error('Account not found');
 
@@ -99,12 +98,37 @@ class AccountService {
     public async deposit(account: IAccount, amount: number) {
         try {
             if (amount <= 0) throw new Error('Invalid amount');
-            const accountModel = await this.findAccount(account);
+            const accountModel = await this.findAccount(account.code);
 
             if (!accountModel) throw new Error('Account not found');
 
             this.addFunds(accountModel._id, amount);
             return { accountId: accountModel._id };
+        } catch (error) {
+            return null;
+        }
+    }
+
+    public async payment(payment: IPayment, originAccountCode: number) {
+        try {
+            const originAccount = await this.findAccount(originAccountCode);
+            const targetAccount = await this.readAccount(payment.targetAccount);
+            if (!originAccount || !targetAccount) throw new Error('Account no found');
+
+            switch (payment.type) {
+                case 'pix':
+                    this.addFunds(targetAccount.data._id, payment.amount);
+                    this.removeFunds(originAccount._id, payment.amount);
+                    break;
+                case 'slip':
+                    this.removeFunds(originAccount._id, payment.amount);
+                    break;
+
+                default:
+                    throw new Error('Invalid payment type');
+            }
+
+            return { accountId: originAccount._id };
         } catch (error) {
             return null;
         }

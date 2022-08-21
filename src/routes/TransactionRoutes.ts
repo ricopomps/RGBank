@@ -8,5 +8,6 @@ router.get('/get/account/:accountId', controller.readTransactionByAccount);
 router.get('/get', controller.readAll);
 router.post('/transfer', controller.transfer);
 router.post('/deposit', controller.deposit);
+router.post('/payment', controller.payment);
 
 export = router;

@@ -2,6 +2,7 @@ import { ITransaction } from '../models/TransactionModel';
 import { IAccount } from '../models/AccountModel';
 import AccountService from './AccountService';
 import TransactionRepository from '../repositories/TransactionRepository';
+import PaymentService from './PaymentService';
 
 class TransactionService {
     public async readTransaction(transactionId: string) {
@@ -56,6 +57,23 @@ class TransactionService {
             } else {
                 throw new Error('Error during transaction');
             }
+        } catch (error: any) {
+            return { statusCode: 500, data: { message: error?.message } };
+        }
+    }
+
+    public async payment(paymentCode: string, originAccountCode: number) {
+        try {
+            const payment = await PaymentService.findPayment(paymentCode);
+            if (!payment) throw new Error('Payment not found');
+
+            const paymentResult = await AccountService.payment(payment, originAccountCode);
+            if (!paymentResult) throw new Error('Payment error');
+
+            const transaction: ITransaction = { originAccount: paymentResult.accountId, targetAccount: payment.targetAccount, amount: payment.amount, type: payment.type };
+
+            await PaymentService.deletePayment(payment._id);
+            return await TransactionRepository.createTransaction(transaction);
         } catch (error: any) {
             return { statusCode: 500, data: { message: error?.message } };
         }

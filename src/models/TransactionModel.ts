@@ -4,7 +4,7 @@ export interface ITransaction {
     originAccount: string;
     targetAccount: string;
     amount: number;
-    type: 'transfer' | 'deposit';
+    type: 'transfer' | 'deposit' | 'pix' | 'slip';
 }
 
 export interface ITransactionModel extends ITransaction, Document {}

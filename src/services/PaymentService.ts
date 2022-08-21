@@ -47,6 +47,10 @@ class PaymentService {
         }
     }
 
+    public async findPayment(code: string) {
+        return await PaymentRepository.findPayment(code);
+    }
+
     public async createPix(payment: IPayment) {
         try {
             const { amount, targetAccount } = payment;

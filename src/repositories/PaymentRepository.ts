@@ -68,6 +68,10 @@ class PaymentRepository {
                 return { statusCode: 500, data: error };
             });
     }
+
+    public async findPayment(code: string) {
+        return await Payment.findOne({ code });
+    }
 }
 
 export default new PaymentRepository();
