@@ -12,7 +12,7 @@ export interface IAccountModel extends IAccount, Document {}
 
 const AccountSchema: Schema = new Schema(
     {
-        user: { type: String, required: true },
+        user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
         balance: { type: Number, required: true },
         type: { type: String, required: true },
         code: { type: Number, required: true },

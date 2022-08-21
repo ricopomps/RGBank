@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import { config } from './config/config';
 import Logging from './library/Logging';
 import userRoutes from './routes/UserRoutes';
+import accountRoutes from './routes/AccountRoutes';
 
 const router = express();
 
@@ -54,6 +55,7 @@ const StartServer = () => {
     });
 
     router.use('/users', userRoutes);
+    router.use('/accounts', accountRoutes);
 
     router.get('/ping', (req, res, next) => res.status(200).json({ message: 'pong' }));
 

@@ -8,9 +8,9 @@ class AccountController {
     }
 
     public async readAccount(req: Request, res: Response, next: NextFunction) {
-        const { AccountId } = req.params;
+        const { accountId } = req.params;
 
-        const response = await AccountService.readAccount(AccountId);
+        const response = await AccountService.readAccount(accountId);
         return res.status(response.statusCode).json(response.data);
     }
 
@@ -20,16 +20,16 @@ class AccountController {
     }
 
     public async updateAccount(req: Request, res: Response, next: NextFunction) {
-        const { AccountId } = req.params;
+        const { accountId } = req.params;
 
-        const response = await AccountService.updateAccount(AccountId, req.body);
+        const response = await AccountService.updateAccount(accountId, req.body);
         return res.status(response.statusCode).json(response.data);
     }
 
     public async deleteAccount(req: Request, res: Response, next: NextFunction) {
-        const { AccountId } = req.params;
+        const { accountId } = req.params;
 
-        const response = await AccountService.deleteAccount(AccountId);
+        const response = await AccountService.deleteAccount(accountId);
         return res.status(response.statusCode).json(response.data);
     }
 }

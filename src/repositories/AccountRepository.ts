@@ -18,6 +18,7 @@ class AccountRepository {
 
     public async readAccount(accountId: string) {
         return Account.findById(accountId)
+            .populate('user')
             .then((account) => {
                 return account ? { statusCode: 200, data: account } : { statusCode: 404, data: { message: 'Not found' } };
             })
@@ -28,6 +29,8 @@ class AccountRepository {
 
     public async readAll() {
         return Account.find()
+            .populate('user')
+            .select('-__v')
             .then((accounts) => {
                 return { statusCode: 200, data: accounts };
             })

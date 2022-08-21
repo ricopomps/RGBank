@@ -50,7 +50,7 @@ class AccountService {
     private validateAccount(account: IAccount): void {
         const errors: string[] = [];
         (Object.keys(account) as (keyof typeof account)[]).find((key) => {
-            if (!account[key]) {
+            if (account[key] === undefined) {
                 errors.push(key);
             }
         });
