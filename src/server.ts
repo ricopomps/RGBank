@@ -8,7 +8,7 @@ import userRoutes from './routes/UserRoutes';
 import accountRoutes from './routes/AccountRoutes';
 import transactionRoutes from './routes/TransactionRoutes';
 import paymentRoutes from './routes/PaymentRoutes';
-
+import { auth } from './middlewares/auth';
 const router = express();
 
 mongoose
@@ -56,6 +56,9 @@ const StartServer = () => {
     });
 
     router.use('/users', userRoutes);
+
+    router.use(auth);
+
     router.use('/accounts', accountRoutes);
     router.use('/transactions', transactionRoutes);
     router.use('/payments', paymentRoutes);
