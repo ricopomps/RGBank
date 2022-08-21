@@ -4,8 +4,8 @@ import AccountRepository from '../repositories/AccountRepository';
 class AccountService {
     public async createAccount(inputAccount: IAccount) {
         try {
-            const { balance, bank, code, type, user } = inputAccount;
-            const account = { balance, bank, code, type, user };
+            const { code, type, user } = inputAccount;
+            const account = { code, type, user, balance: 0, bank: 'RGBank' };
             this.validateAccount(account);
 
             return await AccountRepository.createAccount(account);
@@ -32,7 +32,6 @@ class AccountService {
 
     public async updateAccount(accountId: string, account: IAccount) {
         try {
-            this.validateAccount(account);
             return await AccountRepository.updateAccount(accountId, account);
         } catch (error: any) {
             return { statusCode: 500, data: { message: error?.message } };

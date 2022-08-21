@@ -2,9 +2,7 @@ import Account, { IAccount } from '../models/AccountModel';
 
 class AccountRepository {
     public async createAccount(inputAccount: IAccount) {
-        const account = new Account({
-            ...inputAccount
-        });
+        const account = new Account(inputAccount);
 
         return account
             .save()
