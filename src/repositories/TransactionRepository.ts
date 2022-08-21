@@ -66,6 +66,10 @@ class TransactionRepository {
                 return { statusCode: 500, data: error };
             });
     }
+
+    public async readTransactionByAccount(accountId: string) {
+        return await Transaction.find({ $or: [{ originAccount: accountId }, { targetAccount: accountId }] });
+    }
 }
 
 export default new TransactionRepository();

@@ -20,6 +20,16 @@ class TransactionService {
         }
     }
 
+    public async readTransactionByAccount(accountId: string) {
+        try {
+            const response = await TransactionRepository.readTransactionByAccount(accountId);
+            if (response && response.length > 0) return { statusCode: 200, data: response };
+            else return { statusCode: 404, data: { message: 'No transactions' } };
+        } catch (error: any) {
+            return { statusCode: 500, data: { message: error?.message } };
+        }
+    }
+
     public async transfer(originAccount: IAccount, targetAccount: IAccount, amount: number) {
         try {
             if (amount <= 0) throw new Error('Invalid amount');
