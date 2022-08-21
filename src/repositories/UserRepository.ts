@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { AnyArray } from 'mongoose';
 import User, { IUser } from '../models/UserModel';
 
 class UserRepository {
@@ -69,6 +69,16 @@ class UserRepository {
             .catch((error) => {
                 return { statusCode: 500, data: error };
             });
+    }
+
+    public async findExistingUser(email: string, cpf: string) {
+        return await User.findOne({
+            $or: [{ email, cpf }]
+        }).select('+password');
+    }
+
+    public async login(cpf: string) {
+        return await User.findOne({ cpf }).select('+password').lean();
     }
 }
 

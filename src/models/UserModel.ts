@@ -7,6 +7,7 @@ export interface IUser {
     email: string;
     phone: number;
     cpf: string;
+    password?: string;
 }
 
 export interface IUserModel extends IUser, Document {}
@@ -18,7 +19,8 @@ const UserSchema: Schema = new Schema(
         birthDate: { type: Date, required: true },
         email: { type: String, required: true, unique: true },
         phone: { type: Number, required: true, unique: true },
-        cpf: { type: String, required: true, unique: true }
+        cpf: { type: String, required: true, unique: true },
+        password: { type: String, required: true, select: false }
     },
     { versionKey: false, timestamps: true }
 );

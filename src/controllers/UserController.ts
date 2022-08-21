@@ -32,6 +32,12 @@ class UserController {
         const response = await userService.deleteUser(userId);
         return res.status(response.statusCode).json(response.data);
     }
+
+    public async login(req: Request, res: Response) {
+        const user = req.body;
+        const response = await userService.login(user);
+        return res.status(response.statusCode).json(response.data);
+    }
 }
 
 export default new UserController();
