@@ -9,5 +9,6 @@ router.get('/get', controller.readAll);
 router.patch('/update/:paymentId', controller.updatePayment);
 router.delete('/delete/:paymentId', controller.deletePayment);
 router.post('/create/pix', controller.createPix);
+router.post('/create/slip', controller.createSlip);
 
 export = router;

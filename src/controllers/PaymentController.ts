@@ -32,8 +32,14 @@ class PaymentController {
         const response = await paymentService.deletePayment(paymentId);
         return res.status(response.statusCode).json(response.data);
     }
+
     public async createPix(req: Request, res: Response, next: NextFunction) {
         const response = await paymentService.createPix(req.body);
+        return res.status(response.statusCode).json(response.data);
+    }
+
+    public async createSlip(req: Request, res: Response, next: NextFunction) {
+        const response = await paymentService.createSlip(req.body);
         return res.status(response.statusCode).json(response.data);
     }
 }

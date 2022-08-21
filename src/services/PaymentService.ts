@@ -55,10 +55,25 @@ class PaymentService {
             expireAt.setMinutes(expireAt.getMinutes() + EXPIRE_TIME_PIX);
             const pix: IPayment = { amount, targetAccount, type: 'pix', expireAt, code: crypto.randomUUID() };
 
-            console.log(pix);
             this.validatePayment(pix);
 
             return await PaymentRepository.createPayment(pix);
+        } catch (error: any) {
+            return { statusCode: 500, data: { message: error?.message } };
+        }
+    }
+
+    public async createSlip(payment: IPayment) {
+        try {
+            const { amount, targetAccount } = payment;
+            const expireAt = new Date();
+            const EXPIRE_TIME_SLIP = 60 * 24;
+            expireAt.setMinutes(expireAt.getMinutes() + EXPIRE_TIME_SLIP);
+            const slip: IPayment = { amount, targetAccount, type: 'slip', expireAt, code: crypto.randomUUID() };
+
+            this.validatePayment(slip);
+
+            return await PaymentRepository.createPayment(slip);
         } catch (error: any) {
             return { statusCode: 500, data: { message: error?.message } };
         }
