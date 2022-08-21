@@ -11,8 +11,8 @@ export interface ITransactionModel extends ITransaction, Document {}
 
 const TransactionSchema: Schema = new Schema(
     {
-        originAccount: { type: String, required: true },
-        targetAccount: { type: String, required: true },
+        originAccount: { type: Schema.Types.ObjectId, required: true, ref: 'Account' },
+        targetAccount: { type: Schema.Types.ObjectId, required: true, ref: 'Account' },
         amount: { type: String, required: true },
         type: { type: String, required: true }
     },

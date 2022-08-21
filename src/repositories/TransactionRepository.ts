@@ -16,6 +16,14 @@ class TransactionRepository {
 
     public async readTransaction(transactionId: string) {
         return Transaction.findById(transactionId)
+            .populate({
+                path: 'originAccount',
+                select: ['-balance', '-__v,', '-createdAt', '-updatedAt', '-type']
+            })
+            .populate({
+                path: 'targetAccount',
+                select: ['-balance', '-__v,', '-createdAt', '-updatedAt', '-type']
+            })
             .then((transaction) => {
                 return transaction ? { statusCode: 200, data: transaction } : { statusCode: 404, data: { message: 'Not found' } };
             })
@@ -26,6 +34,14 @@ class TransactionRepository {
 
     public async readAll() {
         return Transaction.find()
+            .populate({
+                path: 'originAccount',
+                select: ['-balance', '-__v,', '-createdAt', '-updatedAt', '-type']
+            })
+            .populate({
+                path: 'targetAccount',
+                select: ['-balance', '-__v,', '-createdAt', '-updatedAt', '-type']
+            })
             .then((transactions) => {
                 return { statusCode: 200, data: transactions };
             })

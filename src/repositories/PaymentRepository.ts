@@ -18,6 +18,14 @@ class PaymentRepository {
 
     public async readPayment(paymentId: string) {
         return Payment.findById(paymentId)
+            .populate({
+                path: 'targetAccount',
+                select: '-balance',
+                populate: {
+                    path: 'user',
+                    select: '-phone'
+                }
+            })
             .then((payment) => {
                 return payment ? { statusCode: 200, data: payment } : { statusCode: 404, data: { message: 'Not found' } };
             })
@@ -28,6 +36,14 @@ class PaymentRepository {
 
     public async readAll() {
         return Payment.find()
+            .populate({
+                path: 'targetAccount',
+                select: '-balance',
+                populate: {
+                    path: 'user',
+                    select: '-phone'
+                }
+            })
             .then((payments) => {
                 return { statusCode: 200, data: payments };
             })
