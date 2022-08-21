@@ -16,9 +16,9 @@ const UserSchema: Schema = new Schema(
         name: { type: String, required: true },
         lastName: { type: String, required: true },
         birthDate: { type: Date, required: true },
-        email: { type: String, required: true },
-        phone: { type: Number, required: true },
-        cpf: { type: String, required: true }
+        email: { type: String, required: true, unique: true },
+        phone: { type: Number, required: true, unique: true },
+        cpf: { type: String, required: true, unique: true }
     },
     { versionKey: false, timestamps: true }
 );
