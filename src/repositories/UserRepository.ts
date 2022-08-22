@@ -38,7 +38,7 @@ class UserRepository {
     public async findExistingUser(email: string, cpf: string) {
         return await User.findOne({
             $or: [{ email, cpf }]
-        }).select('+password');
+        });
     }
 
     public async login(cpf: string) {

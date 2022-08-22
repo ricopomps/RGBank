@@ -20,9 +20,7 @@ class UserService {
             const hashedPassword = await bcrypt.hash(user.password, 10);
             const hashedUser = { ...user, password: hashedPassword };
 
-            const createdUser = await UserRepository.createUser(hashedUser);
-            this.validateUser(createdUser);
-            return createdUser;
+            return await UserRepository.createUser(hashedUser);
         } catch (error) {
             return null;
         }
