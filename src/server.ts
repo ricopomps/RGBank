@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import crypto from 'crypto';
+import cors from 'cors';
 
 import { config } from './config/config';
 import Logging from './library/Logging';
@@ -31,6 +32,7 @@ const StartServer = () => {
     router.use(express.urlencoded({ extended: true }));
 
     router.use(express.json());
+    router.use(cors());
 
     router.use((req, res, next) => {
         res.header('Acess-Control-Allow-Origin', '*');
