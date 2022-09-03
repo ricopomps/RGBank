@@ -83,7 +83,7 @@ class UserService {
             const account = await AccountRepository.findAccountByUserId(loggedUser._id);
             const { password, ...secureUser } = loggedUser;
             if (account) {
-                const balanceUser = { ...secureUser, balance: account.balance };
+                const balanceUser = { ...secureUser, balance: account.balance, accountCode: account.code };
                 const accessToken = jwt.sign(balanceUser, config.auth.secret);
                 return { accessToken, secureUser: balanceUser };
             } else {
