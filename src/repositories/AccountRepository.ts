@@ -44,6 +44,10 @@ class AccountRepository {
     public async findAccount(code: number) {
         return await Account.findOne({ code });
     }
+
+    public async getLastAccount() {
+        return await Account.findOne().sort({ createdAt: -1 }).exec();
+    }
 }
 
 export default new AccountRepository();

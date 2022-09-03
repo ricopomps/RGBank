@@ -5,7 +5,8 @@ import AccountRepository from '../repositories/AccountRepository';
 class AccountService {
     public async createAccount(inputAccount: IAccount) {
         try {
-            const { code, type, user } = inputAccount;
+            const { type, user } = inputAccount;
+            const code = await this.getNewCode();
             const account = { code, type, user, balance: 0, bank: 'RGBank' };
             this.validateAccount(account);
 
@@ -87,6 +88,12 @@ class AccountService {
 
     private async findAccountByUserId(id: string) {
         return await AccountRepository.findAccountByUserId(id);
+    }
+
+    private async getNewCode() {
+        const account = await AccountRepository.getLastAccount();
+        if (!account) return 1;
+        return account.code + 1;
     }
 
     public async transfer(originAccount: IAccount, targetAccount: IAccount, amount: number) {
