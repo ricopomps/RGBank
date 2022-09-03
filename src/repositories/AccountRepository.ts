@@ -37,6 +37,10 @@ class AccountRepository {
         return await Account.findById(accountId);
     }
 
+    public async findAccountByUserId(id: string) {
+        return await Account.findOne({ user: id });
+    }
+
     public async findAccount(code: number) {
         return await Account.findOne({ code });
     }

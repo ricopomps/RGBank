@@ -85,6 +85,10 @@ class AccountService {
         return await AccountRepository.findAccount(code);
     }
 
+    private async findAccountByUserId(id: string) {
+        return await AccountRepository.findAccountByUserId(id);
+    }
+
     public async transfer(originAccount: IAccount, targetAccount: IAccount, amount: number) {
         try {
             if (amount <= 0) throw new Error('Invalid amount');

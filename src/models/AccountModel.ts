@@ -1,7 +1,6 @@
-import mongoose, { Document, Schema } from 'mongoose';
-
+import mongoose, { Document, Schema, Types } from 'mongoose';
 export interface IAccount {
-    user: string;
+    user: Types.ObjectId;
     balance: number;
     type: 'checking account' | 'savings account';
     code: number;

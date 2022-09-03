@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import { IUser } from '../models/UserModel';
 import UserRepository from '../repositories/UserRepository';
 import { config } from '../config/config';
+import AccountRepository from '../repositories/AccountRepository';
 
 class UserService {
     public async createUser(inputUser: IUser) {
@@ -79,10 +80,16 @@ class UserService {
         try {
             const loggedUser = await UserRepository.login(user.cpf);
             if (user === null || loggedUser === null || !loggedUser.password || !(await bcrypt.compare(user.password, loggedUser.password))) throw new Error('Invalid user');
+            const account = await AccountRepository.findAccountByUserId(loggedUser._id);
             const { password, ...secureUser } = loggedUser;
-            const accessToken = jwt.sign({ secureUser }, config.auth.secret);
-
-            return { statusCode: 200, data: { accessToken, secureUser } };
+            if (account) {
+                const balanceUser = { ...secureUser, balance: account.balance };
+                const accessToken = jwt.sign(balanceUser, config.auth.secret);
+                return { accessToken, secureUser: balanceUser };
+            } else {
+                const accessToken = jwt.sign({ secureUser }, config.auth.secret);
+                return { accessToken, secureUser };
+            }
         } catch (error) {
             return null;
         }
