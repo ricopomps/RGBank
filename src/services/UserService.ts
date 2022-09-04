@@ -87,7 +87,7 @@ class UserService {
                 const accessToken = jwt.sign(balanceUser, config.auth.secret);
                 return { accessToken, secureUser: { ...balanceUser, id: balanceUser._id } };
             } else {
-                const accessToken = jwt.sign({ secureUser }, config.auth.secret);
+                const accessToken = jwt.sign(secureUser, config.auth.secret);
                 return { accessToken, secureUser: { ...secureUser, id: secureUser._id } };
             }
         } catch (error) {
