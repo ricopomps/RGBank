@@ -1,21 +1,24 @@
+import jwt from 'jsonwebtoken';
+
+import { IUserModel } from '../models/UserModel';
 import { IAccount } from '../models/AccountModel';
 import { IPayment } from '../models/PaymentModel';
 import AccountRepository from '../repositories/AccountRepository';
 
 class AccountService {
-    public async createAccount(inputAccount: IAccount) {
-        try {
-            const { type, user } = inputAccount;
-            const code = await this.getNewCode();
-            const account = { code, type, user, balance: 0, bank: 'RGBank' };
-            this.validateAccount(account);
+    public async createAccount(authHeader: string, inputAccount: IAccount) {
+        const token = authHeader.split(' ')[1];
+        const user = jwt.decode(token) as IUserModel;
+        if (await this.findAccountByUserId(user._id)) throw new Error('User already have an account');
 
-            const createdAccount = AccountRepository.createAccount(account);
-            if (!createdAccount) throw new Error('Account not created');
-            return createdAccount;
-        } catch (error) {
-            return null;
-        }
+        const { type } = inputAccount;
+        const code = await this.getNewCode();
+        const account = { code, type, user: user._id, balance: 0, bank: 'RGBank' };
+        this.validateAccount(account);
+
+        const createdAccount = AccountRepository.createAccount(account);
+        if (!createdAccount) throw new Error('Account not created');
+        return createdAccount;
     }
 
     public async readAccount(accountId: string) {

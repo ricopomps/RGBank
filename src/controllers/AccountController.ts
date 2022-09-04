@@ -3,9 +3,15 @@ import AccountService from '../services/AccountService';
 
 class AccountController {
     public async createAccount(req: Request, res: Response, next: NextFunction) {
-        const response = await AccountService.createAccount(req.body);
-        if (response) return res.status(201).json(response);
-        return res.status(500).json({ message: 'Unable to create account' });
+        try {
+            const authHeader = req.headers.authorization;
+            if (!authHeader) return res.status(401);
+            const response = await AccountService.createAccount(authHeader, req.body);
+            if (response) return res.status(201).json(response);
+            return res.status(500).json({ message: 'Unable to create account' });
+        } catch (error: any) {
+            return res.status(500).json({ message: error.message });
+        }
     }
 
     public async readAccount(req: Request, res: Response, next: NextFunction) {
